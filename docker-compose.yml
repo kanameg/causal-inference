@@ -1,0 +1,13 @@
+services:
+  rstudio:
+    # platform: linux/x86_64
+    build:
+      dockerfile: Dockerfile
+    container_name: rstudio
+    ports:
+      - "8787:8787"
+    environment:
+      PASSWORD: "password"
+      TZ: Asia/Tokyo
+    volumes:
+      - ./:/home/rstudio
