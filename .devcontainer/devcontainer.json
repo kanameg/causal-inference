@@ -1,12 +1,9 @@
-// For format details, see https://aka.ms/devcontainer.json. For config options, see the
-// README at: https://github.com/devcontainers/templates/tree/main/src/docker-existing-dockerfile
 {
 	"name": "RStudio with Docker Compose",
 	"service": "rstudio",
 	"workspaceFolder": "/home/rstudio",
 	"dockerComposeFile": "../docker-compose.yml",
 
-	// Features to add to the dev container. More info: https://containers.dev/features.
 	"features": {
 		"ghcr.io/devcontainers/features/git:1": {}
 	},
@@ -15,20 +12,19 @@
 	// "forwardPorts": [],
 
 	// Uncomment the next line to run commands after the container is created.
-	// "postCreateCommand": "cat /etc/os-release",
+	"postCreateCommand": "cat /etc/os-release",
 
 	// Configure tool-specific properties.
 	"customizations": {
 		"vscode": {
+			// コンテ環境用の拡張機能をインストール
 			"extensions": [
 				"reditorsupport.r",  // R extension
 				"github.copilot",  // GitHub Copilot
 				"github.copilot-chat",  // GitHub Copilot Chat
+				"mechatroner.rainbow-csv",  // Rainbow CSV
 				"ms-azuretools.vscode-docker"  // Docker extension
 			]
 		}
 	}
-
-	// Uncomment to connect as an existing user other than the container default. More info: https://aka.ms/dev-containers-non-root.
-	// "remoteUser": "devcontainer"
 }
