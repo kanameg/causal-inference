@@ -51,3 +51,46 @@ summary(nonrct_multi_lm)
 
 nonrct_multi_lm_coef <- tidy(nonrct_multi_lm)
 nonrct_multi_lm_coef
+
+
+# ----------------------------------------
+# OVB (Omitted Variable Bias) 脱落変数バイアス
+# ----------------------------------------
+# 目的変数Yと、介入変数Zに対して相関のある変数を追加する
+
+library("broom")
+
+formula_vec <- c(spend ~ treatment + recency + channel, # モデルA
+                 spend ~ treatment + recency + channel + history, # モデルB
+                 history ~ treatment + channel + recency) # モデルC
+
+names(formula_vec) <- paste("reg", LETTERS[1:3], sep = "_")
+
+models <- formula_vec %>%
+    enframe(name = "model_index", value = "formula")
+
+models_df <- models %>%
+    mutate(model = map(.x = formula, .f = lm, data = biased_df)) %>%
+    mutate(model_summary = map(.x = model, .f = tidy))
+
+models_df
+
+results_df <- models_df %>%
+    mutate(formula = as.character(formula)) %>%
+    select(formula, model_index, model_summary) %>%
+    unnest(cols = c(model_summary))
+
+treatment_coef <- results_df %>%
+    filter(term == "treatment") %>%
+    pull(estimate)
+
+history_coef <- results_df %>%
+    filter(model_index == "reg_B",
+           term == "history") %>%
+    pull(estimate)
+
+OVB <- history_coef * treatment_coef[3]
+coef_gap <- treatment_coef[1] - treatment_coef[2]
+
+OVB
+coef_gap
